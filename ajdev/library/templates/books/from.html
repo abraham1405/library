@@ -1,42 +1,45 @@
 <form enctype="multipart/form-data" method="post" class="card shadow p-4">
 
     {% csrf_token %}
-
+    {% for field in formulary %}
     <div class="mb-3">
-        <label for="titulo" class="form-label">Título</label>
-        <input type="text" 
-               class="form-control" 
-               id="titulo" 
-               name="titulo" 
-               placeholder="Ingrese el título del libro" 
-               required>
-    </div>
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
 
-    <div class="mb-3">
-        <label for="imagen" class="form-label">Imagen</label>
-        <input type="file" 
-               class="form-control" 
-               id="imagen" 
-               name="imagen" 
-               accept="image/*">
-    </div>
+        {% if field.field.widget.input_type == 'file' %}
+            {% if field.value %}
+                <div class="mb-2">
+                    <p class="small text-muted mb-1">Current {{ field.label|lower }}:</p>
+                    <img src="{{ field.value.url }}" width="100px" alt="Current {{ field.label|lower }}" class="img-thumbnail">
+                </div>
+            {% endif %}
+            <input type="file" 
+                class="form-control" 
+                id="{{ field.id_for_label }}" 
+                name="{{ field.name }}" 
+                {% if not field.value %}required{% endif %}>
 
-    <div class="mb-3">
-        <label for="descripcion" class="form-label">Descripción</label>
-        <textarea class="form-control" 
-                  id="descripcion" 
-                  name="descripcion" 
-                  rows="4" 
-                  placeholder="Ingrese una descripción del libro"
-                  required></textarea>
+        {% else %}
+            <input type="{{ field.field.widget.input_type }}" 
+                class="form-control" 
+                id="{{ field.id_for_label }}" 
+                name="{{ field.name }}" 
+                placeholder="Enter the book's {{ field.label|lower }}" 
+                value="{{ field.value|default_if_none:'' }}"
+                {% if field.field.required %}required{% endif %}>
+        {% endif %}
+        
+        {% if field.errors %}
+            <div class="text-danger small">{{ field.errors }}</div>
+        {% endif %}
     </div>
+    {% endfor %}
 
     <div class="d-flex justify-content-end gap-2">
         <a href="{% url 'books' %}" class="btn btn-secondary">
-            Cancelar
+            Cancel
         </a>
         <button type="submit" class="btn btn-success">
-            Guardar Libro
+            Save Book
         </button>
     </div>
 

@@ -1,6 +1,6 @@
 {% extends "app.html" %}
 
-{% block title %} Listar Libros {% endblock %}
+{% block title %} List Books {% endblock %}
 
 {% block content %}
 
@@ -10,10 +10,10 @@
         <div class="card-header bg-light">
             <div class="d-flex justify-content-between align-items-center">
                 
-                <h5 class="mb-0"> Libros</h5>
+                <h5 class="mb-0"> Books</h5>
 
                 <a href="{% url 'create' %}" class="btn btn-primary btn-sm">
-                    + Crear Libro
+                    + Create Book
                 </a>
 
             </div>
@@ -26,33 +26,22 @@
                     <thead class="table-light">
                         <tr>
                             <th>ID</th>
-                            <th>Título</th>
-                            <th>Imagen</th>
-                            <th>Descripción</th>
-                            <th class="text-end">Acciones</th>
+                            <th>Title</th>
+                            <th>Image</th>
+                            <th>Description</th>
+                            <th class="text-end">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody>                         
+                        {% for book in listBooks %}
                         <tr>
-                            <td>1</td>
-                            <td>Django con Python</td>
-                            <td>imagen.jpg</td>
-                            <td>Libro que habla sobre el framework Django</td>
+                            <td>{{ book.id }}</td>
+                            <td>{{ book.title }}</td>
+                            <td><img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-thumbnail" style="max-width: 100px;"></td>
+                            <td>{{ book.description }}</td>
                             <td class="text-end">
-                                <a href="{% url 'update'%}" class="btn btn-sm btn-warning">Editar</a>
-                                <a href="#" class="btn btn-sm btn-danger">Borrar</a>
-                            </td>
-                        </tr>
-                         
-                        {% for libro in libros %}
-                        <tr>
-                            <td>{{ libro.id }}</td>
-                            <td>{{ libro.titulo }}</td>
-                            <td>{{ libro.imagen }}</td>
-                            <td>{{ libro.descripcion }}</td>
-                            <td class="text-end">
-                                <a href="{% url 'update' %}" class="btn btn-sm btn-warning">Editar</a>
-                                <a href="#" class="btn btn-sm btn-danger">Borrar</a>
+                                <a href="{% url 'update' book.id %}" class="btn btn-sm btn-warning">Editar</a>
+                                <a href="{% url 'delete' book.id %}" class="btn btn-sm btn-danger">Borrar</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -64,7 +53,7 @@
         </div>
 
         <div class="card-footer text-muted">
-            Total de libros: 1
+            Total books: {{ listBooks|length }}
         </div>
 
     </div>
